@@ -1,0 +1,53 @@
+Microsoft Defender for Endpoint (MDE) Recommendation
+
+MDE provides security recommendations based on threat intelligence and best practices. One of the security hardening recommendations includes configuring UAC to automatically deny elevation requests to reduce the risk of privilege escalation.
+GPO Method (Recommended)
+
+Use Group Policy (GPO) to enforce this setting across multiple systems.
+
+    Open Group Policy Editor (gpedit.msc).
+    Navigate to:
+
+Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options
+
+Locate "User Account Control: Behavior of the elevation prompt for standard users".
+Set it to "Automatically deny elevation requests".
+Click Apply and OK.
+Close the Group Policy Editor.
+Apply the policy by running:
+
+    gpupdate /force
+
+Registry Method (Alternative)
+
+You can enforce the same setting via the Windows Registry.
+
+    Open Registry Editor (regedit.exe).
+    Navigate to:
+
+    HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+
+    Find the key ConsentPromptBehaviorUser.
+    Set its value to 0 (Automatically deny elevation requests).
+    Close Registry Editor.
+    Restart the computer for the changes to take effect.
+
+PowerShell Script (Automation)
+
+For automation, run the following PowerShell command:
+
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorUser" -Value 0
+
+Intune / Endpoint Manager (For Cloud-Managed Devices)
+
+If managing devices via Microsoft Intune:
+
+    Create a Device Configuration Profile
+        Platform: Windows 10 and later
+        Profile type: Settings catalog
+        Search for User Account Control settings
+        Set User Account Control: Behavior of the elevation prompt for standard users to Automatically deny elevation requests
+        Assign the policy to your target devices.
+
+    Save and Deploy.
+
